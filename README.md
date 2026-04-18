@@ -1,5 +1,54 @@
-# Vue 3 + TypeScript + Vite
+# Research Growth Training
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+面向本科生科研新手的“科研成长训练站”前端项目。  
+本项目不是独立的普通小游戏，而是与 **「科研成长训练官」子智能体** 配合使用的交互式训练模块，用于承接科研成长训练任务、展示阶段目标，并通过闯关式训练帮助用户逐步建立科研能力。
 
-Learn more about the recommended Project Setup and IDE Support in the [Vue Docs TypeScript Guide](https://vuejs.org/guide/typescript/overview.html#project-setup).
+---
+
+## 一、项目定位
+
+`Research Growth Training` 是“智研”科研辅助体系中的成长训练模块，主要用于配合子智能体 **「科研成长训练官」** 完成以下过程：
+
+- 从选题开始推进科研训练
+- 将科研任务拆解为阶段目标
+- 把抽象建议转化为可执行训练
+- 通过网页承接交互式训练与闯关体验
+- 帮助用户从“被动接收建议”转向“主动完成成长任务”
+
+因此，本项目不是一个脱离智能体独立运行的纯前端网站，而是一个：
+
+> **由子智能体发布任务、由前端训练站承接任务、由用户在网页中完成训练的科研成长训练模块。**
+
+---
+
+## 二、与「科研成长训练官」子智能体的协作关系
+
+### 子智能体负责什么
+「科研成长训练官」子智能体负责：
+
+- 判断用户当前所处科研阶段
+- 从用户兴趣中收敛研究方向
+- 下达阶段性科研任务
+- 决定是否进入训练站进行交互训练
+- 生成训练任务参数
+- 将用户引导进入网页模块
+
+### 训练站负责什么
+本训练站前端负责：
+
+- 展示当前训练主题
+- 展示当前阶段与任务说明
+- 承接用户进入后的交互训练
+- 呈现任务地图、阶段推进、训练结果等内容
+- 为后续“科研成长游戏化体验”提供前端基础
+
+### 协同逻辑
+整体协同链路如下：
+
+```text
+用户提出科研成长/训练/闯关需求
+→ 调度智能体识别为成长训练意图
+→ 切换到「科研成长训练官」子智能体
+→ 子智能体输出训练任务参数
+→ 平台生成训练站链接
+→ 用户进入本网页完成训练    
