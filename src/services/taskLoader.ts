@@ -10,6 +10,7 @@ export interface TaskLoadResult {
   task: TrainingTask
   error: string | null
   imported: boolean
+  hasDataParam: boolean
 }
 
 function buildTaskFromQuery(search: string): TaskParseResult {
@@ -54,20 +55,22 @@ export function loadTaskWithMeta(search: string): TaskLoadResult {
     return {
       task: parsed.task || defaultTask,
       error: parsed.error,
-      imported: !!parsed.task
+      imported: !!parsed.task,
+      hasDataParam: true
     }
   }
 
   const queryTask = buildTaskFromQuery(search)
 
   if (queryTask.task) {
-    return { task: queryTask.task, error: null, imported: true }
+    return { task: queryTask.task, error: null, imported: true, hasDataParam: false }
   }
 
   return {
     task: defaultTask,
     error: null,
-    imported: false
+    imported: false,
+    hasDataParam: false
   }
 }
 

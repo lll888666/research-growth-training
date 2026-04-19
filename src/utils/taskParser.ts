@@ -48,9 +48,13 @@ export function normalizeTaskObject(raw: unknown): TaskParseResult {
   const source = raw as Record<string, unknown>
 
   const topic = typeof source.topic === 'string' ? source.topic.trim() : ''
-  const taskTitle = typeof source.task_title === 'string' ? source.task_title.trim() : ''
-  const taskDesc = typeof source.task_desc === 'string' ? source.task_desc.trim() : ''
-  const level = normalizeStage(source.current_stage)
+  const taskTitleRaw = source.task_title ?? source.taskTitle
+  const taskDescRaw = source.task_desc ?? source.taskDesc
+  const stageRaw = source.current_stage ?? source.currentStage ?? source.level ?? source.stage
+
+  const taskTitle = typeof taskTitleRaw === 'string' ? taskTitleRaw.trim() : ''
+  const taskDesc = typeof taskDescRaw === 'string' ? taskDescRaw.trim() : ''
+  const level = normalizeStage(stageRaw)
   const keywords = parseKeywords(source.keywords)
 
   const task: TrainingTask = {
@@ -74,13 +78,32 @@ export function parseTaskFromText(text: string): TaskParseResult {
 }
 
 export function parseTaskFromDataParam(dataRaw: string): TaskParseResult {
+  const candidates = [dataRaw]
+
   try {
-    const decoded = decodeURIComponent(dataRaw)
-    const parsed = JSON.parse(decoded)
-    return normalizeTaskObject(parsed)
+    candidates.push(decodeURIComponent(dataRaw))
   } catch {
-    return { task: null, error: 'URL 中的训练任务解析失败，请检查 data 参数。' }
+    // ignore decode error; direct raw parse may still succeed
   }
+
+  try {
+    if (candidates[1]) {
+      candidates.push(decodeURIComponent(candidates[1]))
+    }
+  } catch {
+    // ignore double decode error
+  }
+
+  for (const candidate of candidates) {
+    try {
+      const parsed = JSON.parse(candidate)
+      return normalizeTaskObject(parsed)
+    } catch {
+      // continue trying next candidate
+    }
+  }
+
+  return { task: null, error: 'URL 中的训练任务解析失败，请检查 data 参数。' }
 }
 
 export function normalizeStageFromInput(stageRaw: string | null): StageKey | null {

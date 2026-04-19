@@ -18,17 +18,19 @@ store.restoreState()
 
 const loaded = loadTaskWithMeta(window.location.search)
 
-if (loaded.imported || !store.task) {
-  store.initializeTask(loaded.task, { resetProgress: loaded.imported })
+if (loaded.imported || loaded.hasDataParam || !store.task) {
+  store.initializeTask(loaded.task, { resetProgress: loaded.imported || loaded.hasDataParam })
 }
 
 store.setImportError(loaded.error)
 
+app.mount('#app')
+
 if (loaded.imported) {
   const targetRoute = stageRouteMap[loaded.task.level]
   if (targetRoute) {
-    router.replace(targetRoute)
+    router.isReady().then(() => {
+      router.replace(targetRoute)
+    })
   }
 }
-
-app.mount('#app')
