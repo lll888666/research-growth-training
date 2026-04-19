@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { stageLabels } from '../data/topicMock'
 import { useTrainingStore } from '../stores/training'
+import ResultExportPanel from '../components/ResultExportPanel.vue'
 
 const store = useTrainingStore()
 const router = useRouter()
@@ -10,10 +11,17 @@ const router = useRouter()
 const report = computed(() => store.summary)
 const totalScore = computed(() => store.totalScore)
 const completedCount = computed(() => store.completedCount)
+const resultJson = computed(() => store.resultJson)
 
 function generateReport() {
   store.generateSummary()
 }
+
+onMounted(() => {
+  if (!store.resultJson) {
+    store.refreshResultJson()
+  }
+})
 </script>
 
 <template>
@@ -78,4 +86,6 @@ function generateReport() {
       </div>
     </article>
   </section>
+
+  <ResultExportPanel :result-json="resultJson" />
 </template>

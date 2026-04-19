@@ -2,7 +2,9 @@
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useTrainingStore } from '../stores/training'
-import { stageLabels } from '../data/topicMock'
+import { stageLabels, stageRouteMap } from '../data/topicMock'
+import TaskImportPanel from '../components/TaskImportPanel.vue'
+import type { TrainingTask } from '../types'
 
 const store = useTrainingStore()
 const router = useRouter()
@@ -11,6 +13,12 @@ const task = computed(() => store.task)
 const completedCount = computed(() => store.completedCount)
 const currentScore = computed(() => store.totalScore)
 const progressPercent = computed(() => `${Math.round((completedCount.value / 4) * 100)}%`)
+
+function handleManualImport(task: TrainingTask) {
+  store.initializeTask(task, { resetProgress: true })
+  const targetRoute = stageRouteMap[task.level]
+  router.push(targetRoute)
+}
 </script>
 
 <template>
@@ -24,6 +32,7 @@ const progressPercent = computed(() => `${Math.round((completedCount.value / 4) 
       <p class="section-desc">
         本站用于接收智能体平台下发任务，并执行对应训练关卡。本站不负责选题分析、关键词提炼或科研路线决策。
       </p>
+      <p v-if="store.importError" class="hint-error">{{ store.importError }}</p>
 
       <div class="metric-strip" v-if="task">
         <div class="metric-card">
@@ -78,4 +87,6 @@ const progressPercent = computed(() => `${Math.round((completedCount.value / 4) 
       </div>
     </article>
   </section>
+
+  <TaskImportPanel @imported="handleManualImport" />
 </template>

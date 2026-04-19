@@ -74,3 +74,13 @@ export interface StageReport {
   nextDirection: string
   suggestions: string[]
 }
+
+export interface TrainingResult {
+  topic: string
+  finished_stage: StageKey
+  score: number
+  completed_levels: StageKey[]
+  weak_points: string[]
+  ability_rating: 'beginner' | 'intermediate' | 'advanced'
+  next_stage_suggestion: string
+}

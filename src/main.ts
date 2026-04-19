@@ -4,7 +4,8 @@ import App from './App.vue'
 import router from './router'
 import './style.css'
 import { useTrainingStore } from './stores/training'
-import { loadTaskFromInput } from './services/taskLoader'
+import { loadTaskWithMeta } from './services/taskLoader'
+import { stageRouteMap } from './data/topicMock'
 
 const app = createApp(App)
 const pinia = createPinia()
@@ -13,6 +14,21 @@ app.use(pinia)
 app.use(router)
 
 const store = useTrainingStore(pinia)
-store.initializeTask(loadTaskFromInput(window.location.search))
+store.restoreState()
+
+const loaded = loadTaskWithMeta(window.location.search)
+
+if (loaded.imported || !store.task) {
+  store.initializeTask(loaded.task, { resetProgress: loaded.imported })
+}
+
+store.setImportError(loaded.error)
+
+if (loaded.imported) {
+  const targetRoute = stageRouteMap[loaded.task.level]
+  if (targetRoute) {
+    router.replace(targetRoute)
+  }
+}
 
 app.mount('#app')

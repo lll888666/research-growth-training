@@ -1,28 +1,18 @@
 import { defaultTask } from '../data/topicMock'
-import type { StageKey, TrainingTask } from '../types'
+import type { TrainingTask } from '../types'
+import {
+  normalizeStageFromInput,
+  parseTaskFromDataParam,
+  type TaskParseResult
+} from '../utils/taskParser'
 
-const stageSet = new Set<StageKey>([
-  'risk-identification',
-  'paper-select',
-  'experiment-design',
-  'academic-writing'
-])
-
-function normalizeLevel(stageRaw: string | null): StageKey | null {
-  if (!stageRaw) {
-    return null
-  }
-
-  const normalized = stageRaw.trim()
-
-  if (normalized === 'topic-focus') {
-    return 'risk-identification'
-  }
-
-  return stageSet.has(normalized as StageKey) ? (normalized as StageKey) : null
+export interface TaskLoadResult {
+  task: TrainingTask
+  error: string | null
+  imported: boolean
 }
 
-export function loadTaskFromInput(search: string): TrainingTask {
+function buildTaskFromQuery(search: string): TaskParseResult {
   const params = new URLSearchParams(search)
 
   const topic = params.get('topic')?.trim()
@@ -32,22 +22,55 @@ export function loadTaskFromInput(search: string): TrainingTask {
   const taskTitle = params.get('task_title')?.trim()
   const taskDesc = params.get('task_desc')?.trim()
 
-  const level = normalizeLevel(currentStageRaw || legacyLevelRaw)
+  const level = normalizeStageFromInput(currentStageRaw || legacyLevelRaw)
 
   if (!topic && !keywordsRaw && !level && !taskTitle && !taskDesc) {
-    return defaultTask
+    return { task: null, error: null }
   }
 
   return {
-    topic: topic || defaultTask.topic,
-    keywords: keywordsRaw
-      ? keywordsRaw
-          .split(',')
-          .map((item) => item.trim())
-          .filter(Boolean)
-      : defaultTask.keywords,
-    level: level || defaultTask.level,
-    taskTitle: taskTitle || defaultTask.taskTitle,
-    taskDesc: taskDesc || defaultTask.taskDesc
+    task: {
+      topic: topic || defaultTask.topic,
+      keywords: keywordsRaw
+        ? keywordsRaw
+            .split(',')
+            .map((item) => item.trim())
+            .filter(Boolean)
+        : defaultTask.keywords,
+      level: level || defaultTask.level,
+      taskTitle: taskTitle || defaultTask.taskTitle,
+      taskDesc: taskDesc || defaultTask.taskDesc
+    },
+    error: null
   }
+}
+
+export function loadTaskWithMeta(search: string): TaskLoadResult {
+  const params = new URLSearchParams(search)
+  const data = params.get('data')
+
+  if (data) {
+    const parsed = parseTaskFromDataParam(data)
+    return {
+      task: parsed.task || defaultTask,
+      error: parsed.error,
+      imported: !!parsed.task
+    }
+  }
+
+  const queryTask = buildTaskFromQuery(search)
+
+  if (queryTask.task) {
+    return { task: queryTask.task, error: null, imported: true }
+  }
+
+  return {
+    task: defaultTask,
+    error: null,
+    imported: false
+  }
+}
+
+export function loadTaskFromInput(search: string): TrainingTask {
+  return loadTaskWithMeta(search).task
 }
