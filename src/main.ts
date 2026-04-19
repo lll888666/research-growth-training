@@ -5,7 +5,7 @@ import router from './router'
 import './style.css'
 import { useTrainingStore } from './stores/training'
 import { loadTaskWithMeta } from './services/taskLoader'
-import { stageRouteMap } from './data/topicMock'
+import { applyTrainingTask, navigateByStage } from './utils/taskImport'
 
 const app = createApp(App)
 const pinia = createPinia()
@@ -19,7 +19,7 @@ store.restoreState()
 const loaded = loadTaskWithMeta(window.location.search)
 
 if (loaded.imported || loaded.hasDataParam || !store.task) {
-  store.initializeTask(loaded.task, { resetProgress: loaded.imported || loaded.hasDataParam })
+  applyTrainingTask(store, loaded.task)
 }
 
 store.setImportError(loaded.error)
@@ -27,10 +27,5 @@ store.setImportError(loaded.error)
 app.mount('#app')
 
 if (loaded.imported) {
-  const targetRoute = stageRouteMap[loaded.task.level]
-  if (targetRoute) {
-    router.isReady().then(() => {
-      router.replace(targetRoute)
-    })
-  }
+  router.isReady().then(() => navigateByStage(router, loaded.task.level))
 }

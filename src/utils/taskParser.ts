@@ -42,7 +42,7 @@ function parseKeywords(raw: unknown): string[] {
 
 export function normalizeTaskObject(raw: unknown): TaskParseResult {
   if (!raw || typeof raw !== 'object') {
-    return { task: null, error: '训练任务 JSON 格式错误，请检查后重试。' }
+    return { task: null, error: '任务 JSON 格式错误，请检查后重试。' }
   }
 
   const source = raw as Record<string, unknown>
@@ -73,7 +73,7 @@ export function parseTaskFromText(text: string): TaskParseResult {
     const parsed = JSON.parse(text)
     return normalizeTaskObject(parsed)
   } catch {
-    return { task: null, error: '训练任务 JSON 格式错误，请检查后重试。' }
+    return { task: null, error: '任务 JSON 格式错误，请检查后重试。' }
   }
 }
 

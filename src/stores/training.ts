@@ -42,6 +42,13 @@ const defaultWeakPointCounts: Record<StageKey, number> = {
   'academic-writing': 0
 }
 
+const stageFlow: StageKey[] = [
+  'risk-identification',
+  'paper-select',
+  'experiment-design',
+  'academic-writing'
+]
+
 function cloneRecord<T extends Record<string, number | boolean>>(target: T): T {
   return { ...target }
 }
@@ -50,6 +57,14 @@ function toAbilityRating(score: number): 'beginner' | 'intermediate' | 'advanced
   if (score >= 80) return 'advanced'
   if (score >= 50) return 'intermediate'
   return 'beginner'
+}
+
+function getNextStage(stage: StageKey): StageKey | null {
+  const currentIndex = stageFlow.indexOf(stage)
+  if (currentIndex < 0 || currentIndex >= stageFlow.length - 1) {
+    return null
+  }
+  return stageFlow[currentIndex + 1]
 }
 
 export const useTrainingStore = defineStore('training', {
@@ -97,6 +112,14 @@ export const useTrainingStore = defineStore('training', {
 
       if (!result.passed) {
         this.weakPointCounts[stage] += 1
+      }
+
+      // 当前关卡通过后，将训练入口推进到下一关，形成解锁流程。
+      if (result.passed && this.task && this.task.level === stage) {
+        const nextStage = getNextStage(stage)
+        if (nextStage) {
+          this.task = { ...this.task, level: nextStage }
+        }
       }
 
       this.abilityRating = toAbilityRating(this.totalScore)

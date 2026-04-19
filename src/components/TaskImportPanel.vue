@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import type { TrainingTask } from '../types'
-import { parseTaskFromText } from '../utils/taskParser'
+import { parseTrainingTask } from '../utils/taskImport'
 
 const emit = defineEmits<{
   imported: [task: TrainingTask]
@@ -12,10 +12,10 @@ const error = ref('')
 const success = ref('')
 
 function parseTask() {
-  const result = parseTaskFromText(jsonInput.value)
+  const result = parseTrainingTask(jsonInput.value, 'manual')
 
   if (!result.task || result.error) {
-    error.value = result.error || '训练任务 JSON 格式错误，请检查后重试。'
+    error.value = result.error || '任务 JSON 格式错误，请检查后重试。'
     success.value = ''
     return
   }
@@ -54,7 +54,7 @@ function clearInput() {
     />
 
     <div class="action-row" style="margin-top: 10px">
-      <button class="btn-primary" @click="parseTask">解析训练任务</button>
+      <button class="btn-primary" @click="parseTask">开始训练</button>
       <button class="btn-secondary" @click="clearInput">清空</button>
     </div>
 

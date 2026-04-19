@@ -2,9 +2,9 @@ import { defaultTask } from '../data/topicMock'
 import type { TrainingTask } from '../types'
 import {
   normalizeStageFromInput,
-  parseTaskFromDataParam,
   type TaskParseResult
 } from '../utils/taskParser'
+import { parseTrainingTask } from '../utils/taskImport'
 
 export interface TaskLoadResult {
   task: TrainingTask
@@ -51,7 +51,7 @@ export function loadTaskWithMeta(search: string): TaskLoadResult {
   const data = params.get('data')
 
   if (data) {
-    const parsed = parseTaskFromDataParam(data)
+    const parsed = parseTrainingTask(data, 'url')
     return {
       task: parsed.task || defaultTask,
       error: parsed.error,

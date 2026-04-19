@@ -2,9 +2,10 @@
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useTrainingStore } from '../stores/training'
-import { stageLabels, stageRouteMap } from '../data/topicMock'
+import { stageLabels } from '../data/topicMock'
 import TaskImportPanel from '../components/TaskImportPanel.vue'
 import type { TrainingTask } from '../types'
+import { applyTrainingTask, navigateByStage } from '../utils/taskImport'
 
 const store = useTrainingStore()
 const router = useRouter()
@@ -15,9 +16,8 @@ const currentScore = computed(() => store.totalScore)
 const progressPercent = computed(() => `${Math.round((completedCount.value / 4) * 100)}%`)
 
 function handleManualImport(task: TrainingTask) {
-  store.initializeTask(task, { resetProgress: true })
-  const targetRoute = stageRouteMap[task.level]
-  router.push(targetRoute)
+  applyTrainingTask(store, task)
+  navigateByStage(router, task.level)
 }
 </script>
 
