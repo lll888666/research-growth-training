@@ -37,6 +37,14 @@ function goStage(key: StageKey) {
     router.push(stageRouteMap[key])
   }
 }
+
+function goCurrentStage() {
+  if (!currentStage.value) {
+    router.push('/')
+    return
+  }
+  router.push(stageRouteMap[currentStage.value])
+}
 </script>
 
 <template>
@@ -79,7 +87,9 @@ function goStage(key: StageKey) {
     </div>
 
     <div class="action-row">
+      <button class="btn-secondary" @click="goCurrentStage">继续当前训练</button>
       <button class="btn-primary" @click="router.push('/summary')">查看阶段总结</button>
+      <button class="btn-secondary" @click="router.push('/')">返回首页</button>
     </div>
   </section>
 </template>

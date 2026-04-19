@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { writingCorrectionItems } from '../../data/writingCorrectionMock'
 import { evaluateAcademicWriting } from '../../services/gameEngine'
@@ -10,13 +10,14 @@ const router = useRouter()
 
 const selected = ref<number[]>(Array.from({ length: writingCorrectionItems.length }, () => -1))
 const result = ref<ReturnType<typeof evaluateAcademicWriting> | null>(null)
+const canSubmit = computed(() => selected.value.every((value) => value >= 0))
 
 function selectOption(itemIndex: number, optionIndex: number) {
   selected.value[itemIndex] = optionIndex
 }
 
 function submit() {
-  if (selected.value.some((value) => value < 0)) return
+  if (!canSubmit.value) return
   result.value = evaluateAcademicWriting(selected.value, writingCorrectionItems)
   store.submitLevelResult('academic-writing', result.value)
 }
@@ -59,7 +60,7 @@ function submit() {
       </div>
 
       <div class="action-row">
-        <button class="btn-primary" @click="submit">提交判定</button>
+        <button class="btn-primary" :disabled="!canSubmit" @click="submit">提交判定</button>
         <button class="btn-secondary" @click="router.push('/map')">返回地图</button>
         <button class="btn-secondary" @click="router.push('/summary')">查看阶段总结</button>
       </div>

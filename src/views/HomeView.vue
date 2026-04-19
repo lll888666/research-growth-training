@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useTrainingStore } from '../stores/training'
 import { stageLabels } from '../data/topicMock'
@@ -14,10 +14,25 @@ const task = computed(() => store.task)
 const completedCount = computed(() => store.completedCount)
 const currentScore = computed(() => store.totalScore)
 const progressPercent = computed(() => `${Math.round((completedCount.value / 4) * 100)}%`)
+const actionHint = ref('')
 
 function handleManualImport(task: TrainingTask) {
   applyTrainingTask(store, task)
   navigateByStage(router, task.level)
+}
+
+function handleStartTraining() {
+  if (!task.value) {
+    actionHint.value = '当前未检测到训练任务，请先通过 URL 或手动导入任务。'
+    return
+  }
+  actionHint.value = ''
+  navigateByStage(router, task.value.level)
+}
+
+function handleGoSummary() {
+  actionHint.value = ''
+  router.push('/summary')
 }
 </script>
 
@@ -54,9 +69,10 @@ function handleManualImport(task: TrainingTask) {
       </div>
 
       <div class="action-row">
-        <button class="btn-primary" @click="router.push('/map')">开始训练</button>
-        <button class="btn-secondary" @click="router.push('/summary')">完成本阶段训练后查看总结</button>
+        <button class="btn-primary" @click="handleStartTraining">开始训练</button>
+        <button class="btn-secondary" @click="handleGoSummary">完成本阶段训练后查看总结</button>
       </div>
+      <p v-if="actionHint" class="hint-error">{{ actionHint }}</p>
     </article>
 
     <article class="panel mission-panel" v-if="task">

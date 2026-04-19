@@ -54,7 +54,7 @@ function clearInput() {
     />
 
     <div class="action-row" style="margin-top: 10px">
-      <button class="btn-primary" @click="parseTask">开始训练</button>
+      <button class="btn-primary" @click="parseTask">解析训练任务</button>
       <button class="btn-secondary" @click="clearInput">清空</button>
     </div>
 

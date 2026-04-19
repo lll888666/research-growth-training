@@ -17,6 +17,12 @@ const isHome = computed(() => route.path === '/')
 
 <template>
   <div class="app-shell">
+    <div class="ambient-bg" aria-hidden="true">
+      <span class="ambient-orb orb-a"></span>
+      <span class="ambient-orb orb-b"></span>
+      <span class="ambient-grid"></span>
+    </div>
+
     <header class="top-nav">
       <div>
         <p class="brand-sub">AGENT-INVOKED TRAINING MODULE</p>
