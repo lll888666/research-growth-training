@@ -5,6 +5,7 @@ import { parseTrainingTask } from '../utils/taskImport'
 
 const emit = defineEmits<{
   imported: [task: TrainingTask]
+  cleared: []
 }>()
 
 const jsonInput = ref('')
@@ -29,6 +30,7 @@ function clearInput() {
   jsonInput.value = ''
   error.value = ''
   success.value = ''
+  emit('cleared')
 }
 </script>
 

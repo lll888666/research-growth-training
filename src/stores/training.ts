@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { stageLabels } from '../data/topicMock'
+import { defaultTask } from '../data/topicMock'
 import { buildStageReport } from '../services/reportBuilder'
 import { buildTrainingResult, stringifyTrainingResult } from '../utils/resultBuilder'
 import type { LevelResult, StageKey, StageReport, TrainingTask } from '../types'
@@ -175,6 +176,19 @@ export const useTrainingStore = defineStore('training', {
       } catch {
         localStorage.removeItem(STORAGE_KEY)
       }
+    },
+    clearCurrentProgress() {
+      this.task = { ...defaultTask }
+      this.completed = cloneRecord(defaultCompleted)
+      this.scoreByLevel = cloneRecord(defaultScoreByLevel)
+      this.weakPointCounts = cloneRecord(defaultWeakPointCounts)
+      this.abilityRating = 'beginner'
+      this.summary = null
+      this.resultJson = ''
+      this.importError = null
+
+      localStorage.removeItem(STORAGE_KEY)
+      sessionStorage.removeItem(STORAGE_KEY)
     }
   }
 })

@@ -21,6 +21,11 @@ function handleManualImport(task: TrainingTask) {
   navigateByStage(router, task.level)
 }
 
+function handleClearProgress() {
+  store.clearCurrentProgress()
+  actionHint.value = ''
+}
+
 function handleStartTraining() {
   if (!task.value) {
     actionHint.value = '当前未检测到训练任务，请先通过 URL 或手动导入任务。'
@@ -104,5 +109,5 @@ function handleGoSummary() {
     </article>
   </section>
 
-  <TaskImportPanel @imported="handleManualImport" />
+  <TaskImportPanel @imported="handleManualImport" @cleared="handleClearProgress" />
 </template>
