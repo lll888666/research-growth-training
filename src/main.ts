@@ -14,7 +14,7 @@ app.use(pinia)
 app.use(router)
 
 const store = useTrainingStore(pinia)
-store.restoreState()
+localStorage.removeItem('research-growth-training-state')
 
 const loaded = loadTaskWithMeta(window.location.search)
 
