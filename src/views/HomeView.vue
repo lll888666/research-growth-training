@@ -75,6 +75,7 @@ function handleGoSummary() {
 
       <div class="action-row">
         <button class="btn-primary" @click="handleStartTraining">开始训练</button>
+        <button class="btn-secondary" @click="handleClearProgress">清空当前进度</button>
         <button class="btn-secondary" @click="handleGoSummary">完成本阶段训练后查看总结</button>
       </div>
       <p v-if="actionHint" class="hint-error">{{ actionHint }}</p>
