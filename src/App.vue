@@ -32,6 +32,14 @@ const isHome = computed(() => route.path === '/')
         <RouterLink to="/">首页</RouterLink>
         <RouterLink to="/map">任务地图</RouterLink>
         <RouterLink to="/summary">阶段总结</RouterLink>
+        <a
+          class="agent-return-btn"
+          href="https://adp.cloud.tencent.com/webim_exp/#/chat/UcfXYx"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          返回智能体
+        </a>
       </nav>
     </header>
 

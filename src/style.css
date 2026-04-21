@@ -135,6 +135,19 @@ a {
   color: var(--primary);
 }
 
+.top-nav nav .agent-return-btn {
+  color: #ffffff;
+  background: linear-gradient(120deg, #244f86, #3573b8);
+  box-shadow: 0 8px 18px rgba(36, 79, 134, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.top-nav nav .agent-return-btn:hover {
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(36, 79, 134, 0.32);
+}
+
 .page-wrap {
   margin-top: 18px;
   position: relative;
